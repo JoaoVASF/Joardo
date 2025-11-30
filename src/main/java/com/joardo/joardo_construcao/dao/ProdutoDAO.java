@@ -59,4 +59,11 @@ public class ProdutoDAO {
         jdbcTemplate.update(sql, prod.getNome(), prod.getDescricao(), prod.getImagem(), 
                             prod.getPreco(), prod.getQuantidadeEstoque(), prod.isAtivo(), prod.getId());
     }
+    
+    public void deletarProduto(int id) {
+        String sqlCarrinho = "DELETE FROM item_carrinho WHERE id_produto = ?";
+        jdbcTemplate.update(sqlCarrinho, id);
+        String sqlProduto = "DELETE FROM produto WHERE id = ?";
+        jdbcTemplate.update(sqlProduto, id);
+    }
 }

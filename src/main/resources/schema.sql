@@ -14,5 +14,12 @@ CREATE TABLE IF NOT EXISTS produto (
     imagem VARCHAR(255),
     preco DECIMAL(10, 2),
     quantidade_estoque INTEGER,
-    ativo BOOLEAN DEFAULT TRUE
+    ativo BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE IF NOT EXISTS item_carrinho (
+    id SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES usuario(id),
+    id_produto INTEGER REFERENCES produto(id) ON DELETE CASCADE,
+    quantidade INTEGER
 );

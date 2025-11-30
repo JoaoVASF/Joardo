@@ -4,25 +4,29 @@
     <meta charset="UTF-8">
     <title th:text="${produto.id > 0} ? 'Editar Produto' : 'Novo Produto'"></title>
     <link rel="stylesheet" href="/css/style.css">
+    
+    <script>
+        function confirmarDelecao() {
+            return confirm("Tem certeza que deseja EXCLUIR este produto? Essa ação não pode ser desfeita.");
+        }
+    </script>
 </head>
 <body>
-    <header>
-         <a href="/">
-            <img src="/imagens/logo.png" alt="Joardo Construções" class="logo-img">
-        </a>
+    
+    <header style="background-color: #d9534f;">
+        <h1 style="color: white;" th:text="${produto.id > 0} ? 'Editar Produto' : 'Novo Produto'"></h1>
         <nav>
-            <a href="/admin/produtos" style="color: #333;">Cancelar</a>
+            <a href="/admin/produtos" style="color: white;">Cancelar / Voltar</a>
         </nav>
     </header>
     
     <div class="container">
-        <h2 th:text="${produto.id > 0} ? 'Editar Produto' : 'Novo Produto'"></h2>
-
+        
         <form th:action="@{/admin/produtos/salvar}" th:object="${produto}" method="post">
             
             <input type="hidden" th:field="*{id}">
             <input type="hidden" th:field="*{ativo}">
-            
+
             <div class="form-group">
                 <label>Nome do Produto:</label>
                 <input type="text" th:field="*{nome}" required>
@@ -43,10 +47,21 @@
                 <input type="number" th:field="*{quantidadeEstoque}" required>
             </div>
             
-            <button type="submit">
+            <button type="submit" style="background-color: #007bff; margin-bottom: 10px;">
                 <span th:text="${produto.id > 0} ? 'Salvar Alterações' : 'Cadastrar Produto'"></span>
             </button>
         </form>
+
+        <div th:if="${produto.id > 0}" style="border-top: 1px solid #ddd; padding-top: 20px; margin-top: 20px;">
+            <p style="color: #666; font-size: 0.9em;">Zona de Perigo:</p>
+            
+            <form th:action="@{/admin/produtos/deletar/{id}(id=${produto.id})}" method="post" onsubmit="return confirmarDelecao()">
+                <button type="submit" style="background-color: #dc3545;">
+                    Excluir Produto Permanentemente
+                </button>
+            </form>
+        </div>
+
     </div>
 </body>
 </html>

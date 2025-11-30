@@ -29,12 +29,14 @@ public class AdminController {
         return "admin"; 
     }
 
-    @GetMapping("/produtos")
-    public String gerenciarProdutos(@RequestParam(value = "busca", required = false) String busca, Model model, HttpSession session) {
+@GetMapping("/produtos")
+    public String gerenciarProdutos(@RequestParam(value = "busca", required = false) String busca,
+                                    Model model, HttpSession session) {
         if (!isAdmin(session)) return "redirect:/login";
         List<Map<String, Object>> produtos;
         if (busca != null && !busca.isEmpty()) {
             produtos = produtoService.buscarPorNome(busca);
+            model.addAttribute("termoBusca", busca);
         } else {
             produtos = produtoService.listarProdutosAdmin();
         }
@@ -75,6 +77,15 @@ public class AdminController {
     public String alterarStatus(@PathVariable int id, @RequestParam boolean ativo, HttpSession session) {
         if (!isAdmin(session)) return "redirect:/login";
         produtoService.alternarStatus(id, ativo);
+        return "redirect:/admin/produtos";
+    }
+
+    @PostMapping("/produtos/deletar/{id}")
+    public String deletarProduto(@PathVariable int id, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        
+        produtoService.deletarProduto(id);
+        
         return "redirect:/admin/produtos";
     }
 }
