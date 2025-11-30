@@ -17,7 +17,7 @@ public class ProdutoDAO {
     public void inserirProduto(Produto prod) {
         String sql = "INSERT INTO produto (nome, descricao, imagem, preco, quantidade_estoque, ativo) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, prod.getNome(), prod.getDescricao(), prod.getImagem(), prod.getPreco(),
-                prod.getQuantidadeEstoque(), true);
+                prod.getQuantidadeEstoque(), false);
     }
 
 public List<Map<String, Object>> listarProdutos() {
