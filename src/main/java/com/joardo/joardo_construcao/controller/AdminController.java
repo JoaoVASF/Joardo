@@ -6,45 +6,75 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 
     @Autowired
     private ProdutoService produtoService;
 
     private boolean isAdmin(HttpSession session) {
-        Map<String, Object> usuario = (Map<String, Object>) session.getAttribute("usuarioLogado");
-        return usuario != null && usuario.get("e_admin") != null && (boolean) usuario.get("e_admin");
+        Map<String, Object> user = (Map<String, Object>) session.getAttribute("usuarioLogado");
+        return user != null && (boolean) user.get("e_admin");
     }
 
-    @GetMapping("/admin")
-    public String admin(HttpSession session) {
-        if (!isAdmin(session))
-            return "redirect:/login";
-        return "admin";
+    @GetMapping("") 
+    public String painelGeral(HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        return "admin"; 
     }
 
-    @GetMapping("/cadastroProduto")
-    public String cadastroProduto(Model model, HttpSession session) {
-        if (!isAdmin(session))
-            return "redirect:/login";
+    @GetMapping("/produtos")
+    public String gerenciarProdutos(@RequestParam(value = "busca", required = false) String busca, Model model, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        List<Map<String, Object>> produtos;
+        if (busca != null && !busca.isEmpty()) {
+            produtos = produtoService.buscarPorNome(busca);
+        } else {
+            produtos = produtoService.listarProdutosAdmin();
+        }
+        model.addAttribute("produtos", produtos);
+        return "gerenciarProdutos";
+    }
+
+    @GetMapping("/produtos/novo")
+    public String novoProduto(Model model, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
         model.addAttribute("produto", new Produto());
         return "cadastroProduto";
     }
 
-    @PostMapping("/salvarProduto")
-    public String salvarProduto(@ModelAttribute Produto produto, HttpSession session) {
-        if (!isAdmin(session))
-            return "redirect:/login";
-        produto.setAtivo(true);
-        produto.setImagem("https://via.placeholder.com/150");
-        produtoService.cadastrarProduto(produto);
-        return "redirect:/admin";
+    @GetMapping("/produtos/editar/{id}")
+    public String editarProduto(@PathVariable int id, Model model, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        Map<String, Object> prodMap = produtoService.obterProduto(id);
+        Produto prod = new Produto();
+        prod.setId((int) prodMap.get("id"));
+        prod.setNome((String) prodMap.get("nome"));
+        prod.setDescricao((String) prodMap.get("descricao"));
+        prod.setPreco(((Number) prodMap.get("preco")).doubleValue());
+        prod.setQuantidadeEstoque((int) prodMap.get("quantidade_estoque"));
+        prod.setAtivo((boolean) prodMap.get("ativo"));
+        model.addAttribute("produto", prod);
+        return "cadastroProduto";
+    }
+
+    @PostMapping("/produtos/salvar")
+    public String salvar(@ModelAttribute Produto produto, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        produtoService.salvarProduto(produto);
+        return "redirect:/admin/produtos";
+    }
+
+    @GetMapping("/produtos/status/{id}")
+    public String alterarStatus(@PathVariable int id, @RequestParam boolean ativo, HttpSession session) {
+        if (!isAdmin(session)) return "redirect:/login";
+        produtoService.alternarStatus(id, ativo);
+        return "redirect:/admin/produtos";
     }
 }

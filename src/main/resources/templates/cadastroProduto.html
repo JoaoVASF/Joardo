@@ -2,35 +2,50 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Novo Produto</title>
+    <title th:text="${produto.id > 0} ? 'Editar Produto' : 'Novo Produto'"></title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <header style="background-color: #d9534f;">
-        <h1>Novo Produto</h1>
+    <header>
+         <a href="/">
+            <img src="/imagens/logo.png" alt="Joardo Construções" class="logo-img">
+        </a>
         <nav>
-            <a href="/admin">Voltar</a>
+            <a href="/admin/produtos" style="color: #333;">Cancelar</a>
         </nav>
     </header>
+    
     <div class="container">
-        <form th:action="@{/salvarProduto}" th:object="${produto}" method="post">
+        <h2 th:text="${produto.id > 0} ? 'Editar Produto' : 'Novo Produto'"></h2>
+
+        <form th:action="@{/admin/produtos/salvar}" th:object="${produto}" method="post">
+            
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{ativo}">
+            
             <div class="form-group">
                 <label>Nome do Produto:</label>
-                <input type="text" th:field="*{nome}" placeholder="Ex: Cimento 50kg" required>
+                <input type="text" th:field="*{nome}" required>
             </div>
+            
             <div class="form-group">
                 <label>Descrição:</label>
-                <input type="text" th:field="*{descricao}" placeholder="Detalhes do item">
+                <input type="text" th:field="*{descricao}">
             </div>
+            
             <div class="form-group">
                 <label>Preço (R$):</label>
-                <input type="number" step="0.01" th:field="*{preco}" placeholder="0.00" required>
+                <input type="number" step="0.01" th:field="*{preco}" required>
             </div>
+            
             <div class="form-group">
                 <label>Quantidade em Estoque:</label>
-                <input type="number" th:field="*{quantidadeEstoque}" placeholder="100" required>
+                <input type="number" th:field="*{quantidadeEstoque}" required>
             </div>
-            <button type="submit" style="background-color: #d9534f;">Salvar Produto</button>
+            
+            <button type="submit">
+                <span th:text="${produto.id > 0} ? 'Salvar Alterações' : 'Cadastrar Produto'"></span>
+            </button>
         </form>
     </div>
 </body>

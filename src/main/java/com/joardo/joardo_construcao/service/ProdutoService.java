@@ -29,4 +29,23 @@ public class ProdutoService {
     public Map<String, Object> obterProduto(int id) {
         return produtoDAO.obterProduto(id);
     }
+
+    public void salvarProduto(Produto produto) {
+        if (produto.getImagem() == null || produto.getImagem().isEmpty()) {
+            produto.setImagem("https://via.placeholder.com/150");
+        }
+        if (produto.getId() > 0) {
+            produtoDAO.atualizarProduto(produto);
+        } else {
+            produtoDAO.inserirProduto(produto);
+        }
+    }
+
+    public List<Map<String, Object>> buscarPorNome(String termo) {
+        return produtoDAO.buscarPorNome(termo);
+    }
+    
+    public void alternarStatus(int id, boolean status) {
+        produtoDAO.alternarStatusProduto(id, status);
+    }
 }
