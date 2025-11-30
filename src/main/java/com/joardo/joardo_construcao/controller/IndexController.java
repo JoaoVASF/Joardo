@@ -46,11 +46,16 @@ public class IndexController {
     }
 
     @PostMapping("/cadastrar")
-    public String cadastrar(@ModelAttribute Usuario usuario) {
+    public String cadastrar(@ModelAttribute Usuario usuario, Model model) {
+    try {
         usuario.setAdmin(false);
         usuarioService.cadastrarUsuario(usuario);
         return "redirect:/login";
+    } catch (RuntimeException e) {
+        model.addAttribute("erro", "Este e-mail já está cadastrado");
+        return "cadastro";
     }
+}
 
     @GetMapping("/login")
     public String login() {

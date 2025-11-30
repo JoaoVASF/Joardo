@@ -15,8 +15,13 @@ public class UsuarioService {
     private UsuarioDAO usuarioDAO;
 
     public void cadastrarUsuario(Usuario user) {
-        usuarioDAO.inserirUsuario(user);
+
+    if (usuarioDAO.emailJaExiste(user.getEmail())) {
+        throw new RuntimeException("E-mail já cadastrado");
     }
+
+    usuarioDAO.inserirUsuario(user);
+}
 
     public Map<String, Object> login(String email, String senha) {
         List<Map<String, Object>> usuarios = usuarioDAO.buscarUsuarioPorEmailSenha(email, senha);
