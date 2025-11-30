@@ -28,24 +28,23 @@
 </head>
 <body>
 
-    <header>
-        <h1>Joardo Construções</h1>
+<header>
+        <a href="/">
+            <img src="/imagens/logo.png" alt="Joardo Construções" class="logo-img">
+        </a>
         <nav>
             <a href="/">Início</a>
-            
             <span th:if="${usuarioLogado == null}">
                 <a href="/login">Login</a>
-                <a href="/cadastro">Cadastrar-se</a>
+                <a href="/cadastro">Cadastrar</a>
             </span>
-
             <span th:if="${usuarioLogado != null}">
-                <span th:text="'Olá, ' + ${usuarioLogado.nome}"></span>
-                <a th:if="${usuarioLogado.e_admin}" href="/admin">Painel Admin</a>
-                <a href="/logout" style="color: #ffcccc;">Sair</a>
+                <span th:text="'Olá, ' + ${usuarioLogado.nome}" style="color: #555;"></span>
+                <a href="/carrinho">🛒 Carrinho</a> <a th:if="${usuarioLogado.e_admin}" href="/admin">Admin</a>
+                <a href="/logout" style="color: red;">Sair</a>
             </span>
         </nav>
     </header>
-
     <main>
         <h2 style="text-align: center; margin-top: 20px;">Nossos Materiais</h2>
 
@@ -59,11 +58,12 @@
                 <h3 th:text="${produto.nome}">Nome</h3>
                 <p th:text="${produto.descricao}">Desc</p>
                 <p style="color: green; font-weight: bold;">R$ <span th:text="${produto.preco}">0.00</span></p>
-                <button>Comprar</button>
+                <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" method="post">
+                    <button type="submit">Comprar</button>
+                </form>
             </div>
         </div>
     </main>
-
     <footer style="text-align: center; padding: 20px; margin-top: 20px; background: #ddd;">
         <p>&copy; 2025 Joardo Construções</p>
     </footer>
