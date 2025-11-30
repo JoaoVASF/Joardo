@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Joardo Construções</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Joardo Construções</h1>
+        <nav>
+            <a href="/">Voltar para Loja</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 style="text-align: center;">Criar Conta</h2>
+        
+        <form th:action="@{/cadastrar}" th:object="${usuario}" method="post">
+            
+            <div class="form-group">
+                <label>Nome Completo:</label>
+                <input type="text" th:field="*{nome}" placeholder="Seu nome" required>
+            </div>
+
+            <div class="form-group">
+                <label>Telefone:</label>
+                <input type="text" th:field="*{telefone}" placeholder="(XX) 99999-9999">
+            </div>
+
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" th:field="*{email}" placeholder="seu@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" th:field="*{senha}" required>
+            </div>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+</body>
+</html>
