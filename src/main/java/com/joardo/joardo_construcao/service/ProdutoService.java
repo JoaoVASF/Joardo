@@ -48,4 +48,8 @@ public class ProdutoService {
     public void alternarStatus(int id, boolean status) {
         produtoDAO.alternarStatusProduto(id, status);
     }
+
+    public void deletarProduto(int id) {
+        produtoDAO.deletarProduto(id);
+    }
 }
