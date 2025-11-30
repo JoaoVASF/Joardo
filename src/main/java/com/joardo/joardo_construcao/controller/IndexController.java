@@ -1,6 +1,7 @@
 package com.joardo.joardo_construcao.controller;
 
 import com.joardo.joardo_construcao.model.Usuario;
+import com.joardo.joardo_construcao.service.CarrinhoService;
 import com.joardo.joardo_construcao.service.ProdutoService;
 import com.joardo.joardo_construcao.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -18,17 +19,23 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
-    @Autowired
-    private ProdutoService produtoService;
-
-    @Autowired
-    private UsuarioService usuarioService;
+    @Autowired private ProdutoService produtoService;
+    @Autowired private UsuarioService usuarioService;
+    @Autowired private CarrinhoService carrinhoService;
 
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         List<Map<String, Object>> produtos = produtoService.listarProdutosLoja();
         model.addAttribute("produtos", produtos);
-        model.addAttribute("usuarioLogado", session.getAttribute("usuarioLogado"));
+        Map<String, Object> usuario = (Map<String, Object>) session.getAttribute("usuarioLogado");
+        model.addAttribute("usuarioLogado", usuario);
+        if (usuario != null) {
+            int qtdItens = carrinhoService.contarItensNoCarrinho((int) usuario.get("id"));
+            model.addAttribute("qtdCarrinho", qtdItens);
+        } else {
+            model.addAttribute("qtdCarrinho", 0);
+        }
+
         return "index";
     }
 
@@ -52,9 +59,9 @@ public class IndexController {
 
     @PostMapping("/logar")
     public String logar(@RequestParam("email") String email,
-            @RequestParam("senha") String senha,
-            HttpSession session,
-            Model model) {
+                        @RequestParam("senha") String senha,
+                        HttpSession session,
+                        Model model) {
         Map<String, Object> usuario = usuarioService.login(email, senha);
         if (usuario != null) {
             session.setAttribute("usuarioLogado", usuario);

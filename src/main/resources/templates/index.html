@@ -5,43 +5,34 @@
     <title>Joardo Construções</title>
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        .lista-produtos {
+        .card-footer {
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            padding: 20px;
-            justify-content: center;
+            gap: 5px;
+            align-items: center;
+            margin-top: 10px;
         }
-        .card-produto {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            width: 200px;
-            border-radius: 8px;
+        .input-qtd {
+            width: 60px;
+            padding: 8px;
             text-align: center;
-        }
-        .card-produto img {
-            max-width: 100%;
-            height: auto;
         }
     </style>
 </head>
 <body>
-
-<header>
+    <header>
         <a href="/">
             <img src="/imagens/logo.jpg" alt="Joardo Construções" class="logo-img">
         </a>
-        
         <nav>
             <span th:if="${usuarioLogado == null}">
                 <a href="/login">Login</a>
                 <a href="/cadastro">Cadastrar</a>
             </span>
-
             <span th:if="${usuarioLogado != null}">
                 <span th:text="'Olá, ' + ${usuarioLogado.nome}" style="color: #555; margin-right: 10px;"></span>
-                <a href="/carrinho">Carrinho</a>
+                <a href="/carrinho" style="font-weight: bold;">
+                    Carrinho (<span th:text="${qtdCarrinho}">0</span>)
+                </a>
                 <a th:if="${usuarioLogado.e_admin}" href="/admin">Admin</a>
                 <a href="/logout" style="color: #d9534f;">Sair</a>
             </span>
@@ -53,14 +44,20 @@
         <div th:if="${produtos.empty}" style="text-align: center;">
             <p>Nenhum produto cadastrado no momento.</p>
         </div>
-        <div class="lista-produtos">
-            <div th:each="produto : ${produtos}" class="card-produto">
+        <div class="lista-produtos" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 20px;">
+            <div th:each="produto : ${produtos}" class="card-produto" style="background: white; border: 1px solid #ddd; padding: 15px; width: 220px; border-radius: 8px; text-align: center;">
                 <h3 th:text="${produto.nome}">Nome</h3>
                 <p th:text="${produto.descricao}">Desc</p>
-                <p style="color: green; font-weight: bold;">R$ <span th:text="${produto.preco}">0.00</span></p>
-                
-                <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" method="post">
-                    <button type="submit">Comprar</button>
+                <p style="color: green; font-weight: bold;">
+                    R$ <span th:text="${#numbers.formatDecimal(produto.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span>
+                </p>
+                <p style="font-size: 0.8em; color: #666;">Estoque: 
+                    <span th:text="${produto.quantidade_estoque}">0</span>
+                </p>
+                <form th:action="@{/carrinho/adicionar/{id}(id=${produto.id})}" method="post" class="card-footer">
+                    <input type="number" name="quantidade" value="1" min="1" 
+                           th:max="${produto.quantidade_estoque}" class="input-qtd" required>
+                    <button type="submit" style="font-size: 0.9em; padding: 8px;">Adicionar</button>
                 </form>
             </div>
         </div>

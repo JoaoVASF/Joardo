@@ -1,9 +1,11 @@
 package com.joardo.joardo_construcao.service;
 
+import com.joardo.joardo_construcao.dao.CarrinhoDAO;
 import com.joardo.joardo_construcao.dao.ProdutoDAO;
 import com.joardo.joardo_construcao.model.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Importante para garantir segurança
 
 import java.util.List;
 import java.util.Map;
@@ -14,25 +16,27 @@ public class ProdutoService {
     @Autowired
     private ProdutoDAO produtoDAO;
 
-    public void cadastrarProduto(Produto prod) {
-        produtoDAO.inserirProduto(prod);
-    }
+    @Autowired
+    private CarrinhoDAO carrinhoDAO;
 
-    public List<Map<String, Object>> listarProdutosLoja() {
-        return produtoDAO.listarProdutos();
-    }
-
-    public List<Map<String, Object>> listarProdutosAdmin() {
-        return produtoDAO.listarTodosProdutosAdmin();
-    }
-
-    public Map<String, Object> obterProduto(int id) {
-        return produtoDAO.obterProduto(id);
+    @Transactional
+    public void alternarStatus(int id, boolean status) {
+        
+        if (!status) {
+            int qtdNoLimbo = carrinhoDAO.somarQuantidadeTotalEmCarrinhos(id);
+            if (qtdNoLimbo > 0) {
+                Map<String, Object> produto = produtoDAO.obterProduto(id);
+                int estoqueAtual = (int) produto.get("quantidade_estoque");
+                produtoDAO.atualizarEstoque(id, estoqueAtual + qtdNoLimbo);
+                carrinhoDAO.removerProdutoDeTodosOsCarrinhos(id);
+            }
+        }
+        produtoDAO.alternarStatusProduto(id, status);
     }
 
     public void salvarProduto(Produto produto) {
         if (produto.getImagem() == null || produto.getImagem().isEmpty()) {
-            produto.setImagem("https://via.placeholder.com/150");
+             produto.setImagem(null); 
         }
         if (produto.getId() > 0) {
             produtoDAO.atualizarProduto(produto);
@@ -41,15 +45,23 @@ public class ProdutoService {
         }
     }
 
+    public void deletarProduto(int id) {
+        produtoDAO.deletarProduto(id);
+    }
+
     public List<Map<String, Object>> buscarPorNome(String termo) {
         return produtoDAO.buscarPorNome(termo);
     }
-    
-    public void alternarStatus(int id, boolean status) {
-        produtoDAO.alternarStatusProduto(id, status);
+
+    public List<Map<String, Object>> listarProdutosAdmin() {
+        return produtoDAO.listarTodosProdutosAdmin();
     }
 
-    public void deletarProduto(int id) {
-        produtoDAO.deletarProduto(id);
+    public List<Map<String, Object>> listarProdutosLoja() {
+        return produtoDAO.listarProdutos();
+    }
+
+    public Map<String, Object> obterProduto(int id) {
+        return produtoDAO.obterProduto(id);
     }
 }

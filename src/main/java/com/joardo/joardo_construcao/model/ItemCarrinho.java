@@ -8,6 +8,7 @@ public class ItemCarrinho {
     private String nomeProduto;
     private double precoProduto;
     private double totalPreco;
+    
     public ItemCarrinho() {}
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

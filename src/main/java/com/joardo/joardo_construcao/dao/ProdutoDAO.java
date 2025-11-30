@@ -20,8 +20,8 @@ public class ProdutoDAO {
                 prod.getQuantidadeEstoque(), true);
     }
 
-    public List<Map<String, Object>> listarProdutos() {
-        String sql = "SELECT * FROM produto WHERE ativo = true";
+public List<Map<String, Object>> listarProdutos() {
+        String sql = "SELECT * FROM produto WHERE ativo = true ORDER BY nome ASC";
         return jdbcTemplate.queryForList(sql);
     }
 
@@ -59,7 +59,7 @@ public class ProdutoDAO {
         jdbcTemplate.update(sql, prod.getNome(), prod.getDescricao(), prod.getImagem(), 
                             prod.getPreco(), prod.getQuantidadeEstoque(), prod.isAtivo(), prod.getId());
     }
-    
+
     public void deletarProduto(int id) {
         String sqlCarrinho = "DELETE FROM item_carrinho WHERE id_produto = ?";
         jdbcTemplate.update(sqlCarrinho, id);

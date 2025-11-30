@@ -6,12 +6,18 @@
     --texto: #333333;
 }
 
-body {
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--fundo);
     color: var(--texto);
-    margin: 0;
-    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -42,14 +48,25 @@ header nav a:hover {
     color: var(--azul-claro);
 }
 
-.container {
+main, .container {
     width: 90%;
     max-width: 1000px;
     margin: 40px auto;
+    
+    flex: 1 0 auto; 
+}
+
+.container {
     background: var(--branco);
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+main {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
 }
 
 button {
@@ -68,14 +85,12 @@ button {
 button:hover {
     background-color: var(--azul-claro);
 }
-
 .btn-danger {
     background-color: #dc3545;
 }
 .btn-danger:hover {
     background-color: #a71d2a;
 }
-
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -87,7 +102,14 @@ input[type="number"] {
     border-radius: 5px;
     box-sizing: border-box;
 }
-
 .form-group {
     margin-bottom: 20px;
+}
+
+footer {
+    flex-shrink: 0;
+    background: #ddd;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
 }
