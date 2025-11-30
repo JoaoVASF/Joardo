@@ -7,10 +7,22 @@
 </head>
 <body>
 
-    <header>
-        <h1>Carrinho de Compras</h1>
+<header>
+        <a href="/">
+            <img src="/imagens/logo.jpg" alt="Joardo Construções" class="logo-img">
+        </a>
         <nav>
-            <a href="/">Continuar Comprando</a>
+            <span th:if="${usuarioLogado == null}">
+                <a href="/login">Login</a>
+                <a href="/cadastro">Cadastrar</a>
+            </span>
+
+            <span th:if="${usuarioLogado != null}">
+                <span th:text="'Olá, ' + ${usuarioLogado.nome}" style="color: #555; margin-right: 10px;"></span>
+                <a href="/carrinho">Carrinho</a>
+                <a th:if="${usuarioLogado.e_admin}" href="/admin">Admin</a>
+                <a href="/logout" style="color: #d9534f;">Sair</a>
+            </span>
         </nav>
     </header>
     <div class="container" style="max-width: 800px;">

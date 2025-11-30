@@ -48,4 +48,15 @@ public class ProdutoDAO {
         String sql = "UPDATE produto SET ativo = ? WHERE id = ?";
         jdbcTemplate.update(sql, ativo, id);
     }
+
+    public List<Map<String, Object>> buscarPorNome(String termo) {
+        String sql = "SELECT * FROM produto WHERE LOWER(nome) LIKE LOWER(?) ORDER BY id";
+        return jdbcTemplate.queryForList(sql, "%" + termo + "%");
+    }
+
+    public void atualizarProduto(Produto prod) {
+        String sql = "UPDATE produto SET nome=?, descricao=?, imagem=?, preco=?, quantidade_estoque=?, ativo=? WHERE id=?";
+        jdbcTemplate.update(sql, prod.getNome(), prod.getDescricao(), prod.getImagem(), 
+                            prod.getPreco(), prod.getQuantidadeEstoque(), prod.isAtivo(), prod.getId());
+    }
 }

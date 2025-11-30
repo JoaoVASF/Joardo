@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Produtos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    
+    <header>
+        <a href="/">
+            <img src="/imagens/logo.png" alt="Joardo Construções" class="logo-img">
+        </a>
+        <nav>
+            <a href="/admin">Voltar ao Painel</a>
+        </nav>
+    </header>
+
+    <div class="container" style="max-width: 1000px;">
+        <h2>Gerenciar Estoque</h2>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <form action="/admin/produtos" method="get" style="display: flex; gap: 10px; flex-grow: 1; margin-right: 20px;">
+                <input type="text" name="busca" placeholder="Buscar por nome..." style="margin: 0;">
+                <button type="submit" style="width: 100px;">Buscar</button>
+            </form>
+            <a href="/admin/produtos/novo" style="width: 180px;">
+                <button style="background-color: #28a745;">+ Novo Produto</button>
+            </a>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #eee; text-align: left;">
+                    <th style="padding: 10px;">ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="prod : ${produtos}" style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;" th:text="${prod.id}">1</td>
+                    <td th:text="${prod.nome}">Nome</td>
+                    <td th:text="'R$ ' + ${prod.preco}">0.00</td>
+                    <td th:text="${prod.quantidade_estoque}">0</td>
+                    <td>
+                        <strong th:if="${prod.ativo}" style="color: green;">Ativo</strong>
+                        <strong th:unless="${prod.ativo}" style="color: red;">Inativo</strong>
+                    </td>
+                    <td style="display: flex; gap: 5px; padding: 10px;">
+                        <a th:href="@{/admin/produtos/editar/{id}(id=${prod.id})}">
+                            <button style="padding: 5px; background: #007bff; width: auto;">Editar</button>
+                        </a>
+                        
+                        <a th:if="${prod.ativo}" th:href="@{/admin/produtos/status/{id}(id=${prod.id}, ativo=false)}">
+                            <button style="padding: 5px; background: #dc3545; width: auto;">Desativar</button>
+                        </a>
+                        <a th:unless="${prod.ativo}" th:href="@{/admin/produtos/status/{id}(id=${prod.id}, ativo=true)}">
+                            <button style="padding: 5px; background: #28a745; width: auto;">Ativar</button>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
