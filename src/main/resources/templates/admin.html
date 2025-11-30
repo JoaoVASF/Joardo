@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header style="background-color: #d9534f;"> <h1>Área Restrita - Admin</h1>
+        <nav>
+            <a href="/">Ver Loja (Cliente)</a>
+            <a href="/logout">Sair</a>
+        </nav>
+    </header>
+    <div class="container" style="max-width: 800px; text-align: center;">
+        <h2>Bem-vindo, Chefe!</h2>
+        <p>O que você deseja fazer hoje?</p>
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+            <div style="border: 1px solid #ddd; padding: 20px; border-radius: 8px; width: 200px;">
+                <h3>Produtos</h3>
+                <p>Adicionar novos itens ao estoque.</p>
+                <a href="/cadastroProduto"><button>Cadastrar Produto</button></a>
+            </div>
+            <div style="border: 1px solid #ddd; padding: 20px; border-radius: 8px; width: 200px; opacity: 0.5;">
+                <h3>Funcionários</h3>
+                <p>Gerenciar equipe (Em breve).</p>
+                <button disabled>Em breve</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
