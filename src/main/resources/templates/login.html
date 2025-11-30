@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Joardo Construções</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Joardo Construções</h1>
+        <nav>
+            <a href="/">Voltar para Loja</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 style="text-align: center;">Acessar Conta</h2>
+
+        <div th:if="${erro}" class="error">
+            <p th:text="${erro}"></p>
+        </div>
+
+        <form action="/logar" method="post">
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" name="senha" required>
+            </div>
+
+            <button type="submit">Entrar</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 15px;">
+            Não tem conta? <a href="/cadastro">Cadastre-se aqui</a>
+        </p>
+    </div>
+
+</body>
+</html>

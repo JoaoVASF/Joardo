@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Joardo Construções</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .lista-produtos {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+            justify-content: center;
+        }
+        .card-produto {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            width: 200px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .card-produto img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Joardo Construções</h1>
+        <nav>
+            <a href="/">Início</a>
+            
+            <span th:if="${usuarioLogado == null}">
+                <a href="/login">Login</a>
+                <a href="/cadastro">Cadastrar-se</a>
+            </span>
+
+            <span th:if="${usuarioLogado != null}">
+                <span th:text="'Olá, ' + ${usuarioLogado.nome}"></span>
+                <a th:if="${usuarioLogado.e_admin}" href="/admin">Painel Admin</a>
+                <a href="/logout" style="color: #ffcccc;">Sair</a>
+            </span>
+        </nav>
+    </header>
+
+    <main>
+        <h2 style="text-align: center; margin-top: 20px;">Nossos Materiais</h2>
+
+        <div th:if="${produtos.empty}" style="text-align: center;">
+            <p>Nenhum produto cadastrado no momento.</p>
+        </div>
+
+        <div class="lista-produtos">
+            <div th:each="produto : ${produtos}" class="card-produto">
+                <img src="https://via.placeholder.com/150" alt="Imagem do produto">
+                <h3 th:text="${produto.nome}">Nome</h3>
+                <p th:text="${produto.descricao}">Desc</p>
+                <p style="color: green; font-weight: bold;">R$ <span th:text="${produto.preco}">0.00</span></p>
+                <button>Comprar</button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; margin-top: 20px; background: #ddd;">
+        <p>&copy; 2025 Joardo Construções</p>
+    </footer>
+
+</body>
+</html>
