@@ -83,9 +83,7 @@ public class AdminController {
     @PostMapping("/produtos/deletar/{id}")
     public String deletarProduto(@PathVariable int id, HttpSession session) {
         if (!isAdmin(session)) return "redirect:/login";
-        
         produtoService.deletarProduto(id);
-        
         return "redirect:/admin/produtos";
     }
 }

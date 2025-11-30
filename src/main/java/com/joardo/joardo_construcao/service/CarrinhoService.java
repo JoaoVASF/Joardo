@@ -20,25 +20,47 @@ public class CarrinhoService {
     private ProdutoDAO produtoDAO;
 
     @Transactional
-    public void adicionarProduto(int idUsuario, int idProduto) {
+    public void adicionarProduto(int idUsuario, int idProduto, int quantidadeDesejada) {
         Map<String, Object> produto = produtoDAO.obterProduto(idProduto);
-        int estoqueAtual = (int) produto.get("quantidade_estoque");
-        if (estoqueAtual > 0) {
-            produtoDAO.atualizarEstoque(idProduto, estoqueAtual - 1);
-            carrinhoDAO.adicionarItem(idUsuario, idProduto);
+        if (produto != null) {
+            int estoqueAtual = (int) produto.get("quantidade_estoque");
+            if (estoqueAtual >= quantidadeDesejada) {
+                int novoEstoque = estoqueAtual - quantidadeDesejada;
+                produtoDAO.atualizarEstoque(idProduto, novoEstoque);
+                if (novoEstoque == 0) {
+                    produtoDAO.alternarStatusProduto(idProduto, false);
+                }
+                Integer qtdNoCarrinho = carrinhoDAO.verificarQuantidadeNoCarrinho(idUsuario, idProduto);
+                if (qtdNoCarrinho == null) {
+                    carrinhoDAO.adicionarItem(idUsuario, idProduto, quantidadeDesejada);
+                } else {
+                    carrinhoDAO.somarQuantidade(idUsuario, idProduto, quantidadeDesejada);
+                }
+            }
         }
     }
 
     @Transactional
     public void removerItem(int idItemCarrinho) {
         ItemCarrinho item = carrinhoDAO.obterItem(idItemCarrinho);
-        Map<String, Object> produto = produtoDAO.obterProduto(item.getIdProduto());
-        int estoqueAtual = (int) produto.get("quantidade_estoque");
-        produtoDAO.atualizarEstoque(item.getIdProduto(), estoqueAtual + 1);
-        carrinhoDAO.removerItem(idItemCarrinho);
+        
+        if (item != null) {
+            Map<String, Object> produto = produtoDAO.obterProduto(item.getIdProduto());
+            int estoqueAtual = (int) produto.get("quantidade_estoque");
+            int novoEstoque = estoqueAtual + item.getQuantidade();
+            produtoDAO.atualizarEstoque(item.getIdProduto(), novoEstoque);
+            if (novoEstoque > 0) {
+                produtoDAO.alternarStatusProduto(item.getIdProduto(), true);
+            }
+            carrinhoDAO.removerItem(idItemCarrinho);
+        }
     }
 
     public List<ItemCarrinho> listarCarrinho(int idUsuario) {
         return carrinhoDAO.listarItensDoUsuario(idUsuario);
+    }
+    
+    public int contarItensNoCarrinho(int idUsuario) {
+        return carrinhoDAO.contarItensUnicos(idUsuario);
     }
 }

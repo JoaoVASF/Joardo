@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -26,18 +27,22 @@ public class CarrinhoController {
         int idUsuario = (int) usuario.get("id");
         List<ItemCarrinho> itens = carrinhoService.listarCarrinho(idUsuario);
         double valorTotal = itens.stream().mapToDouble(ItemCarrinho::getTotalPreco).sum();
+        int qtdItens = carrinhoService.contarItensNoCarrinho(idUsuario);
         model.addAttribute("itens", itens);
         model.addAttribute("valorTotal", valorTotal);
-        
+        model.addAttribute("usuarioLogado", usuario);
+        model.addAttribute("qtdCarrinho", qtdItens);
         return "carrinho";
     }
 
     @PostMapping("/carrinho/adicionar/{idProduto}")
-    public String adicionar(@PathVariable int idProduto, HttpSession session) {
+    public String adicionar(@PathVariable int idProduto, 
+                            @RequestParam("quantidade") int quantidade, 
+                            HttpSession session) {
         Map<String, Object> usuario = (Map<String, Object>) session.getAttribute("usuarioLogado");
         if (usuario == null) return "redirect:/login";
-        carrinhoService.adicionarProduto((int) usuario.get("id"), idProduto);
-        return "redirect:/carrinho";
+        carrinhoService.adicionarProduto((int) usuario.get("id"), idProduto, quantidade);
+        return "redirect:/"; 
     }
 
     @PostMapping("/carrinho/remover/{idItem}")
