@@ -54,8 +54,8 @@ public class IndexController {
     } catch (RuntimeException e) {
         model.addAttribute("erro", "Este e-mail já está cadastrado");
         return "cadastro";
+        }
     }
-}
 
     @GetMapping("/login")
     public String login() {

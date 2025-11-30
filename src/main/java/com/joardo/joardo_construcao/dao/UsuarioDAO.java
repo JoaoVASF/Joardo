@@ -28,11 +28,11 @@ public class UsuarioDAO {
         String sql = "SELECT * FROM usuario WHERE e_admin = true";
         return jdbcTemplate.queryForList(sql);
     }
-    
-    public boolean emailJaExiste(String email) {
-    String sql = "SELECT COUNT(*) FROM usuario WHERE email = ?";
-    Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
-    return count != null && count > 0;
-}
+
+    public boolean existeEmail(String email) {
+        String sql = "SELECT COUNT(*) FROM usuario WHERE email = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
+        return count != null && count > 0;
+    }
 
 }
